@@ -14,21 +14,20 @@ export type Subscribed<A, B> = Attribute<A, B> & {
 	Connect: (...any) -> (),
 	__signal: {
 		Connect: (self: any, listener: (JSONAcceptable) -> ()) -> any,
-		Fire: (self: any, ...any) -> ()
+		Fire: (self: any, ...any) -> (),
 	},
 } & A
 
-export type Profile = {
-	playerName: string,
-	playerId: number,
-	attributes: { [string]: {
-		class: Attribute<any, any>,
-		subscribed: boolean,
-	} }, -- unsure if any is correct here
+export type Agent = {
+	player: Player,
+	attributes: { [string]: Attribute<{}, JSONAcceptable> }, 
 }
 
 export type Cerebral = {
-	Agents: { [string]: Profile },
+	Agents: { [string]: Agent },
+	New: () -> (),
+	AddAgent: (self: Cerebral, agent: Agent) -> (),
+	RemoveAgent: (self: Cerebral, agent: Player) -> (),
 }
 
 export type AvailableDefaultModules = "boolean" | "string" | "number"

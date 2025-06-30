@@ -2,10 +2,24 @@
 --!strict
 
 -- Constants --
+local AGENT_FOLDER = "__Data"
+
 
 -- Dependencies --
 local DefaultModules = require(script.DefaultModules)
 local Signal = require(script.Signal)
+local Types = require(script.__Types)
+local Agent = require(script.__Agent)
+
+-- Types --
+export type JSONAcceptable = Types.JSONAcceptable
+export type Attribute<A, B> = Types.Attribute<A, B>
+export type Subscribed<A, B> = Types.Subscribed<A, B>
+export type Agent = Agent.Agent
+export type AvailableDefaultModules = Types.AvailableDefaultModules
+export type Cerebral = Types.Cerebral
+
+type ClassName = string
 
 -- Private --
 
@@ -14,76 +28,124 @@ local function _onChange() end
 
 -- Public --
 
----- Types ----
-export type JSONAcceptable = { JSONAcceptable } | { [string]: JSONAcceptable } | number | string | boolean | buffer
-
-export type Attribute<A, B> = typeof(setmetatable({}, {})) & {
-	Name: string,
-	Value: B,
-	__Subscribed: boolean,
-	New: (...any) -> A,
-	GetSafe: (self: A) -> JSONAcceptable,
-	Set: (self: A, ...any) -> (),
-} & A
-
-export type Subscribed<A, B> = Attribute<A, B> & {
-	Fire: (...any) -> (),
-	Connect: (...any) -> (),
-	__signal: {
-		Connect: (self: any, listener: (JSONAcceptable) -> ()) -> any,
-		Fire: (self: any, ...any) -> ()
-	},
-} & A
-
-export type Profile = {
-	playerName: string,
-	playerId: number,
-	attributes: { [string]: {
-		class: Attribute<any, any>,
-		subscribed: boolean,
-	} }, -- unsure if any is correct here
+---- Cerebral Class ----
+local Cerebral = {
+	Agents = {},
+	__attributes = {},
 }
 
-export type AvailableDefaultModules = "boolean" | "string" | "number"
-
-export type Cerebral = {
-	New: () -> (),
-	AddAgent: (self: Cerebral, agent: Profile) -> (),
-	RemoveAgent: (self: Cerebral, agent: Player) -> (),
-	Agents: { [string]: Profile },
-}
-
----- End of Types ----
-
----- Class ----
-
-local Cerebral = {}
 Cerebral.__index = Cerebral
 
 function Cerebral.New()
 	local self
 
-	self = {
-		Agents = {},
-	}
+	self = {}
 	setmetatable(self, Cerebral)
 
 	return self
 end
 
-function Cerebral:NewAgent(agent: Profile)
-	self.Agents[agent.playerId] = agent
+--[[
+Defines the attributes of every joining player.
+
+PRIORITY IMPLEMENTATION: The ClassName must match that found in the DataStore.
+
+Example:
+```
+local Cerebral = Cerebral.New()
+Cerebral:DefineAttributes({
+	money = Cerebral:Create("number"),
+	xp = Cerebral:Create("number"),
+	is_admin = Cerebral:Create("boolean"),
+})
+```
+]]
+function Cerebral:DefineAgentAttributes(attributes: { [ClassName]: Attribute<any, JSONAcceptable> })
+	for name, class in attributes do
+		self.__attributes[name] = class
+	end
 end
 
-function Cerebral:RemoveAgent(agent: Player)
-	self.Agents[agent.UserId] = nil
+--[[
+Example of incoming playerData:
+```
+{
+	"money": 42,
+	"xp": 9999,
+	"is_admin": false
+}
+```
+]]
+function Cerebral:__SetAttribute<A, B>(
+	agent: Agent,
+	data: JSONAcceptable & B,
+	attribute: Attribute<A, B>,
+	name: string
+): Subscribed<A, B>
+	-- Add subscription methods
+	local inter = Cerebral:__Subscribe(attribute)
+
+	-- Add the updated attribute to the Agent
+	local att = Agent:AddAttribute(inter, data, name)
+
+	-- Return updated attribute for further use
+	return att
 end
 
-function Cerebral:GetAgent(agent: Player)
-	return self.Agents[agent.UserId]
+-- Adds a new agent to Cerebral
+function Cerebral:NewAgent(player: Player, playerData: { [string]: JSONAcceptable }): Agent
+	local agent: Agent
+	local agentFolder: Instance
+	local _att: Subscribed<any, any>
+	local dataType: AvailableDefaultModules
+	local storedData: any -- BoolValue | NumberValue | StringValue
+
+	agent = Agent.New(player)
+	agentFolder = agent:AddPlayerFolder(AGENT_FOLDER)
+
+	self.Agents[player.UserId] = agent
+
+	-- UNTESTED
+	for name, data in playerData do
+		if self.__attributes[name] then
+			_att = Cerebral:__SetAttribute(agent, data, self.__attributes[name], name)
+			dataType = typeof(_att:GetSafe()) :: AvailableDefaultModules
+
+			if dataType == "boolean" then
+				storedData = Instance.new("BoolValue")
+			elseif dataType == "number" then
+				storedData = Instance.new("NumberValue")
+			elseif dataType == "string" then
+				storedData = Instance.new("StringValue")
+			end
+
+			storedData.Value = data
+			storedData.Parent = agentFolder
+
+			-- Automatically updates values stored under Players[player]
+			_att:Connect(function(value: typeof(data))
+				storedData.Value = 	value
+			end)
+		else
+			warn(`[{script.Name}]: MISSING DATA. Please add attribute for {name}`)
+		end
+	end
+
+	return agent
 end
 
-function Cerebral:Subscribe<A, B>(class: A): Subscribed<A, B>
+-- Removes an agent from Cerebral
+function Cerebral:RemoveAgent(player: Player)
+	self.Agents[player.UserId] = nil
+end
+
+-- Gets an agent from Cerebral
+function Cerebral:GetAgent(player: Player)
+	return self.Agents[player.UserId]
+end
+
+-- Subscribes to an attribute
+function Cerebral:__Subscribe<A, B>(class: A): Subscribed<A, B>
 	--[[
     Maybe every single class has a `state` value. This value can be anything except a table.
     Every time state changes, we trigger a fire event for that player. 
@@ -125,25 +187,25 @@ function Cerebral:Subscribe<A, B>(class: A): Subscribed<A, B>
 	return _class
 end
 
-function Cerebral:Create(type: AvailableDefaultModules, name: string): any
+-- DEVELOPER NOTE: Don't love the `any` return value
+function Cerebral:Create(type: AvailableDefaultModules): any
 	if type == nil then
 		error(`[{script.Name}]: Must have type`)
 	elseif type ~= "boolean" and type ~= "string" and type ~= "number" then
 		error(`[{script.Name}]: No availbe default module for {type}`)
 	end
 
-    local _r: any
-    
+	local _r: any
+
 	if type == "boolean" then
-		 _r = DefaultModules.Bool 
+		_r = DefaultModules.Bool
 	elseif type == "number" then
 		_r = DefaultModules.Number
 	elseif type == "string" then
 		_r = DefaultModules.String
 	end
 
-    _r.Name = name
-    return _r
+	return _r
 end
 
 -- Does not make much sense here unless we are polling all data within Cerebral
