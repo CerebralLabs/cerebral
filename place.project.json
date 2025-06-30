@@ -1,0 +1,17 @@
+{
+	"name": "Cerebral",
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"Packages": {
+				"$path": "Packages",
+				"$ignoreUnknownInstances": true,
+				"Cerebral": {
+					"$path": "default.project.json",
+					"$ignoreUnknownInstances": true
+				}
+			}
+		}
+	}
+}

@@ -1,1 +1,4 @@
 std = "roblox"
+
+[config]
+global_usage = { ignore_pattern = "(^__)|(^NOCOLOR) }
