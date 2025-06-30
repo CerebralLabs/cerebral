@@ -14,7 +14,7 @@ local Agent = {
 }
 Agent.__index = Agent
 
--- Creates new Agent and adds to Cerebral contorl
+-- Creates new Agent and adds to Cerebral control
 function Agent.New(player: Player): Agent
 	if typeof(player) ~= "Instance" then
 		error(`[{script.Name}]: Must have player`)
@@ -44,7 +44,11 @@ function Agent:AddAttribute<A, B>(class: Types.Attribute<A, B>, initValue: B, na
 	return self.attributes[name] :: Types.Subscribed<typeof(class), typeof(initValue)>
 end
 
--- What happens if class is nil?
+--[[
+Returns an attribute of an Agent
+ 
+WARNING: Can fail if attribute does not exist
+]]
 function Agent:GetAttribute<A>(attribute: string)
 	if attribute == nil then
 		error(`[{script.Name}]: Must have attribute`)
@@ -63,11 +67,12 @@ function Agent:GetAttribute<A>(attribute: string)
 	return class
 end
 
--- Update function similar to how SharedTables updated
 --[[
-If the agent has an attribute that is a table (say for inventory),
-this allows the user to update that table like they would a SharedTable
-]]
+UNTESTED: If the agent has an attribute that is a table (say for inventory),
+this allows the user to update that table like they would a SharedTable.
+
+DEVELOPER NOTE: Currently, tables are not an accepted value type. This is a priority.
+]] -- Update function similar to how SharedTables updated
 function Agent:UpdateTable<A>(attribute: string, callback: (oldValue: A & {}) -> A & {}): A & {}
 	local class
 	local value: A & {}
