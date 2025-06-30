@@ -125,7 +125,8 @@ function Cerebral:NewAgent(player: Player, playerData: { [string]: JSONAcceptabl
 			storedData.Value = data
 			storedData.Parent = agentFolder
 
-			-- Automatically updates values stored under Players[player]
+			-- Automatically updates values stored under Players[player] whenver
+			-- the value of _att changes
 			_att:Connect(function(value: typeof(data))
 				storedData.Value = value
 			end)
