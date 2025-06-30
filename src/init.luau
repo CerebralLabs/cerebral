@@ -4,7 +4,6 @@
 -- Constants --
 local AGENT_FOLDER = "__Data"
 
-
 -- Dependencies --
 local DefaultModules = require(script.DefaultModules)
 local Signal = require(script.Signal)
@@ -117,6 +116,10 @@ function Cerebral:NewAgent(player: Player, playerData: { [string]: JSONAcceptabl
 				storedData = Instance.new("NumberValue")
 			elseif dataType == "string" then
 				storedData = Instance.new("StringValue")
+			else
+				-- boolean, number, and string are the only available data types
+				-- supported in subscriptions
+				continue
 			end
 
 			storedData.Value = data
@@ -124,7 +127,7 @@ function Cerebral:NewAgent(player: Player, playerData: { [string]: JSONAcceptabl
 
 			-- Automatically updates values stored under Players[player]
 			_att:Connect(function(value: typeof(data))
-				storedData.Value = 	value
+				storedData.Value = value
 			end)
 		else
 			warn(`[{script.Name}]: MISSING DATA. Please add attribute for {name}`)
