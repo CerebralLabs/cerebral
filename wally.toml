@@ -1,7 +1,12 @@
 [package]
-name = "engel/cerebralworkspace"
-version = "0.1.0"
+name = "cerebrallabs/cerebral"
+version = "0.0.1"
+description = "A player state management tool"
+license = "MIT"
+authors = ["Ruby Engelhart <engelhartrueben@gmail.com>"]
 registry = "https://github.com/UpliftGames/wally-index"
+repository = "https://github.com/CerebralLabs/cerebral"
 realm = "shared"
+exlude = ["aftman.toml", "README.md", "selene.toml", ".luaurc"]
 
 [dependencies]
