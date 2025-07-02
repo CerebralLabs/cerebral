@@ -15,7 +15,7 @@
 > [!WARNING]
 > Cerebral is in its early stages. So much so that there is no current version.
 
-> [!INFO]
+> [!WARNING]
 > Cerebral does not currently interact with DataStore.
 
 ## About
