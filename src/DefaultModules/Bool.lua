@@ -1,4 +1,4 @@
-local __Types = require(script.Parent)
+local __Types = require(script.Parent.Parent.__Types)
 
 export type Module = {
     Get: () -> boolean,
