@@ -6,7 +6,7 @@ local AGENT_FOLDER = "__Data"
 
 -- Dependencies --
 local DefaultModules = require(script.DefaultModules)
-local Signal = require(script.Signal)
+local Signal = require(script.__Packages.Signal)
 local Types = require(script.__Types)
 local Agent = require(script.__Agent)
 
