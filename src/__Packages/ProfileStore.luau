@@ -368,9 +368,10 @@ local function UpdateAsync(profile_store, profile_key, transform_params, is_user
 	
 	local next_in_queue = WaitInUpdateQueue(SessionToken(profile_store.Name, profile_key, is_user_mock))
 
-	local success = true
+	local success: boolean = true
+    local error_message: string = nil
 
-	local success, error_message = pcall(function()
+	success, error_message = pcall(function()
 		local transform_function = function(latest_data)
 
 			local missing_profile = false
