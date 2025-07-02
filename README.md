@@ -15,6 +15,9 @@
 > [!WARNING]
 > Cerebral is in its early stages. So much so that there is no current version.
 
+> [!INFO]
+> Cerebral does not currently interact with DataStore.
+
 ## About
 **Cerebral** is a Roblox Player State Management Tool. This tool is created to make managing Player Data through the server as seemeless and error free as possible, so you can spend more time the fun stuff rather than wondering why your *Money* is not increasing.
 
