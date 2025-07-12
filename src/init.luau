@@ -37,7 +37,7 @@ Private.
 
 Creates the Cerebral object.
 ]]
-function Cerebral.New(): Types.Cerebral
+function Cerebral.__New(): Types.Cerebral
 	local self
 
 	self = {}
@@ -220,5 +220,5 @@ Allows only one Cerebral to be passed around the application.
 Importing Cerebral anywhere in the game, will always point towards
 the same Cerebral Object.
 ]]
-local out = Cerebral.New()
+local out = Cerebral.__New()
 return out
