@@ -65,6 +65,9 @@ local Agent = {}
 Agent.__index = Agent
 
 -- Creates new Agent and adds to Cerebral control
+-- TODO:
+-- A new Agent must get the data from the datastore and return it in
+-- self.data
 function Agent.New(player: Player): Agent
 	if typeof(player) ~= "Instance" then
 		error(`[{script.Name}]: Must have player`)

@@ -25,11 +25,7 @@ type ClassName = string
 -- Public --
 
 ---- Cerebral Class ----
-local Cerebral = {
-	Agents = {},
-	__attributes = {},
-}
-
+local Cerebral = {}
 Cerebral.__index = Cerebral
 
 --[[
@@ -40,7 +36,12 @@ Creates the Cerebral object.
 function Cerebral.__New(): Types.Cerebral
 	local self
 
-	self = {}
+	self = {
+		Agents = {},
+		__attributes = {},
+		__sessionAttributes = {},
+	}
+
 	setmetatable(self, Cerebral)
 
 	return self
@@ -64,6 +65,23 @@ Cerebral:DefineAttributes({
 function Cerebral:DefineAgentAttributes(attributes: { [ClassName]: Attribute<any, JSONAcceptable> })
 	for name, class in attributes do
 		self.__attributes[name] = class
+	end
+end
+
+--[[
+Defines the session data for every joining player. Session data does not persist between sessions.
+
+Example:
+```luau
+local Cerebral = require(path to cerebral)
+Cerebral:DefineAgentSessionData({
+	points = Cerebral:Create("number")
+})
+```
+]]
+function Cerebral:DefineAgentSessionData(attributes: { [ClassName]: Attribute<any, JSONAcceptable> })
+	for name, class in attributes do
+		self.__sessionAttributes[name] = class
 	end
 end
 
@@ -96,7 +114,7 @@ function Cerebral:__SetAttribute<A, B>(
 end
 
 -- Adds a new agent to Cerebral
-function Cerebral:NewAgent(player: Player, playerData: { [string]: JSONAcceptable }): Agent
+function Cerebral:NewAgent(player: Player): Agent
 	local agent: Agent
 	local agentFolder: Instance
 	local _att: Subscribed<any, any>
@@ -109,7 +127,7 @@ function Cerebral:NewAgent(player: Player, playerData: { [string]: JSONAcceptabl
 	self.Agents[player.UserId] = agent
 
 	-- UNTESTED
-	for name, data in playerData do
+	for name, data in agent.data do
 		if self.__attributes[name] then
 			_att = Cerebral:__SetAttribute(agent, data, self.__attributes[name], name)
 			dataType = typeof(_att:GetSafe()) :: AvailableDefaultModules
@@ -143,7 +161,9 @@ function Cerebral:NewAgent(player: Player, playerData: { [string]: JSONAcceptabl
 end
 
 -- Removes an agent from Cerebral
+-- TODO: RemoveAgent must also go through the process of saving the users data
 function Cerebral:RemoveAgent(player: Player)
+	warn(`[{script.Name}]: RemoveAgent UNIMPLEMENTED. User data WILL be lost.`)
 	self.Agents[player.UserId] = nil
 end
 
