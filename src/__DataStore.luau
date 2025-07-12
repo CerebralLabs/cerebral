@@ -117,4 +117,5 @@ function DataStore:UpdatePlayerData<A>(
     return {}
 end
 
-return DataStore
+local out = DataStore.New()
+return out
