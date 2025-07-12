@@ -9,9 +9,7 @@ export type Agent = Types.Agent & {
 	AddPlayerFolder: (self: Agent, folderName: string) -> Instance
 }
 
-local Agent = {
-	attributes = {},
-}
+local Agent = {}
 Agent.__index = Agent
 
 -- Creates new Agent and adds to Cerebral control
@@ -24,6 +22,7 @@ function Agent.New(player: Player): Agent
 
 	self = {
 		player = player,
+		attributes = {},
 	}
 	setmetatable(self, Agent)
 
@@ -96,11 +95,38 @@ end
 
 -- Consider making private?
 -- Adds folder to Agent's player
+-- should we consider using attributes instead?
 function Agent:AddPlayerDataFolder(folderName: string): Instance
 	local folder = Instance.new("Folder")
 	folder.Name = folderName
 	folder.Parent = self.player
 	return folder
+end
+
+function Agent:GetSafeData(): {}
+	local safeData: {}
+	
+	safeData = {}
+
+	for _, attribute in self.attributes do
+		local data: Types.JSONAcceptable
+		local name: string
+
+		name = attribute.Name
+		if name == nil then 
+			error(`[{script.Name}]: attribute does not have name!`)
+		end
+
+		if typeof(attribute["GetSafe"]) ~= "function" then
+			error(`[{script.Name}]: attribute [{name}] does not have GetSafe function!`)
+		end
+		data = attribute:GetSafe()
+
+		-- What happens if data is nil?
+		safeData[name] = data
+	end
+
+	return safeData
 end
 
 return Agent
