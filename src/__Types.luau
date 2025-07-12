@@ -30,6 +30,13 @@ export type Cerebral = {
 	RemoveAgent: (self: Cerebral, agent: Player) -> (),
 }
 
+export type DataStore = {
+	DataStoreName: string,
+
+	New: () -> DataStore,
+	SaveSinglePlayerData: (agent: Agent) -> boolean,
+}
+
 export type AvailableDefaultModules = "boolean" | "string" | "number"
 
 return {}
