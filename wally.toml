@@ -1,6 +1,6 @@
 [package]
-name = "cerebrallabs/cerebral"
-version = "0.0.2"
+name = "cerebrallabs/ceebral"
+version = "0.0.3"
 description = "A player state management tool"
 license = "MIT"
 authors = ["Ruby Engelhart <engelhartrueben@gmail.com>"]
