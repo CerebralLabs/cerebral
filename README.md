@@ -22,14 +22,14 @@
 **Cerebral** is a Roblox Player State Management Tool. This tool is created to make managing Player Data through the server as seemeless and error free as possible, so you can spend more time the fun stuff rather than wondering why your *Money* is not increasing.
 
 ## Supported Platforms
-No supported platforms at the moment. In the future, **Cerebral** will be posted to the Roblox Store as well as to [Wally](www.wally.run)
+**Cerebral** is currently posted on [Wally](www.wally.run) under `cerebrallabs/cerebral`. Roblox Store support is planned.
 
 ## Use
+### Set Up
 ```luau
 local Players = game:GetService("Players")
 
-local CerebralPackage = require(--[[path to Cerebral]])
-local Cerebral = CerebralPackage.New()
+local Cerebral = require(--[[path to Cerebral]])
 
 Cerebral:DefineAgentAttributes({
     "money" = Cereberal:Create("number"),
@@ -54,4 +54,23 @@ end
 
 Players.PlayerAdded:Connect(PlayerAdded)
 Players.PlayerRemoved:Connect(RemovePlayer)
+```
+
+### Use
+Imagine a buy station.
+```luau
+local Cerebral = require(--[[path to Cerebral]])
+local proximitySensor = script.--[[path to proximitySensor]]
+
+local COST = 50
+
+proximitySensor.Triggered:Connect(function(player: Player)
+    local playerMoney = Cerebral:GetAgent(player):GetAttribute("money")
+    if playerMoney:Get() >= COST then
+        playerMoney:Decrement(COST)
+        --[[award player whatever this proximitySensor is connected to]]
+    else
+        --[[notify user "NOT ENOUGH MONEY]]
+    end
+end)
 ```
