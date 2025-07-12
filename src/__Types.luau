@@ -1,3 +1,4 @@
+local DataStoreService = game:GetService("DataStoreService")
 export type JSONAcceptable = { JSONAcceptable } | { [string]: JSONAcceptable } | number | string | boolean | buffer
 
 export type Attribute<A, B> = typeof(setmetatable({}, {})) & {
@@ -30,11 +31,12 @@ export type Cerebral = {
 	RemoveAgent: (self: Cerebral, agent: Player) -> (),
 }
 
-export type DataStore = {
+export type DataStore<A> = {
 	DataStoreName: string,
 
-	New: () -> DataStore,
-	SaveSinglePlayerData: (agent: Agent) -> boolean,
+	New: () -> DataStore<A>,
+	GetPlayerData: (self: DataStore<A>, player: Player, _kickPlayerOnFail: boolean) -> A,
+	UpdatePlayerData: (self: DataStore<A>, player: Player, DataStoreService: A) -> A,
 }
 
 export type AvailableDefaultModules = "boolean" | "string" | "number"
