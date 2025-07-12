@@ -49,6 +49,10 @@ function Number:Get(): number
 	return self.Value
 end
 
+function Number:HasEnough(amt: number): boolean
+	return self:Get() >= amt
+end
+
 function Number:GetSafe(): number
 	return self:Get()
 end
