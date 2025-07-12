@@ -1,5 +1,5 @@
 [package]
-name = "cerebrallabs/ceebral"
+name = "cerebrallabs/cerebral"
 version = "0.0.3"
 description = "A player state management tool"
 license = "MIT"
