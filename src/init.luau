@@ -32,7 +32,12 @@ local Cerebral = {
 
 Cerebral.__index = Cerebral
 
-function Cerebral.New()
+--[[
+Private.
+
+Creates the Cerebral object.
+]]
+function Cerebral.__New()
 	local self
 
 	self = {}
@@ -208,5 +213,10 @@ function Cerebral:Create(type: AvailableDefaultModules): any
 
 	return _r
 end
-
-return Cerebral
+--[[
+Allows only one Cerebral to be passed around the application.
+Importing Cerebral anywhere in the game, will always point towards
+the same Cerebral Object.
+]]
+local out = Cerebral.New()
+return out

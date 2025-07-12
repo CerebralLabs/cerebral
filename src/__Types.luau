@@ -25,7 +25,7 @@ export type Agent = {
 
 export type Cerebral = {
 	Agents: { [string]: Agent },
-	New: () -> (),
+	__New: () -> Cerebral,
 	AddAgent: (self: Cerebral, agent: Agent) -> (),
 	RemoveAgent: (self: Cerebral, agent: Player) -> (),
 }
