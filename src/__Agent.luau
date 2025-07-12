@@ -1,13 +1,65 @@
 --!strict
 
+-- Dependencies --
 local Types = require(script.Parent.__Types)
+local DataStore = require(script.Parent.__DataStore)
 
+-- Constants --
+
+-- Types --
 export type Agent = Types.Agent & {
 	AddAttribute: (self: Agent, class: any, initialValue: any, name: string) -> Types.Attribute<any, any>,
 	GetAttribute: (self: Agent, className: string) -> Types.Attribute<any, any>,
 	UpdateTable: (self: Agent, attribute: string, callback: (any) -> any) -> any,
 	AddPlayerFolder: (self: Agent, folderName: string) -> Instance
 }
+
+-- What the Player data looks like in cerebral
+export type PlayingTemplate = {
+	playerId: number, -- player.UserId
+	attributes: { Types.Attribute<any, any> }, -- All the attributes, is converted to data at save
+	DataId: number, -- Data id; increments after each safe
+	metaData: {
+		sessions: number, -- total logins
+		lastUpdate: number, -- last update
+		lastLogin: number, -- last login
+		profileCreationTime: number, -- when the profile was created
+	}
+}
+
+-- What the Player data looks like in DataStore
+export type StoringTemplate = {
+	playerId: number, -- player.UserId,
+	data: { [string]: Types.JSONAcceptable }, -- All the data from each attributes [.Name] = .GetSafe()
+	DataId: number, -- Data id; increments after each save.
+	metaData: {
+		sessions: number, -- total logins; wont be the same of DataId
+		lastUpdate: number, -- last update
+		lastLogin: number, -- last login
+		profileCreationTime: number, -- when the profile was created
+	}
+}
+
+-- Private --
+
+-- For new players with no data
+local function newPlayer(player: Player)
+	if typeof(player) ~= "Instance" then
+		error(`[{script.Name}]: Must have player`)
+	end
+
+	local newData
+
+end
+
+local function getAgentData(player: Player)
+	local data: {}
+
+	data = DataStore:GetPlayerData(player)
+end
+
+-- Public --
+---- Agent Class ----
 
 local Agent = {}
 Agent.__index = Agent
@@ -30,7 +82,7 @@ function Agent.New(player: Player): Agent
 end
 
 -- Adds an attribute to a Agent
-function Agent:AddAttribute<A, B>(class: Types.Attribute<A, B>, initValue: B, name: string): Types.Subscribed<A, B>
+function Agent:__AddAttribute<A, B>(class: Types.Attribute<A, B>, initValue: B, name: string): Types.Subscribed<A, B>
 	if name == nil then
 		error(`[{script.Name}]: Must have a name for class`)
 	elseif type(name) ~= "string" then

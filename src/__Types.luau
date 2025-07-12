@@ -21,7 +21,10 @@ export type Subscribed<A, B> = Attribute<A, B> & {
 
 export type Agent = {
 	player: Player,
-	attributes: { [string]: Attribute<{}, JSONAcceptable> }, 
+	attributes: { [string]: Attribute<{}, JSONAcceptable> },
+	__AddAttribute: (self: Agent, class: Attribute<any, any>, initValue: any, name: string) -> Subscribed<any, any>,
+	GetAttribute: (self: Agent, attribute: string) -> Subscribed<any, any>,
+	UpdateTable: (self: Agent, attribute: string, callback: (oldValue: {}) -> {}) -> ()
 }
 
 export type Cerebral = {

@@ -89,7 +89,7 @@ function Cerebral:__SetAttribute<A, B>(
 	local inter = self:__Subscribe(attribute)
 
 	-- Add the updated attribute to the Agent
-	local att = agent:AddAttribute(inter, data, name)
+	local att = agent:__AddAttribute(inter, data, name)
 
 	-- Return updated attribute for further use
 	return att
