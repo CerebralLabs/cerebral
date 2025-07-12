@@ -22,9 +22,6 @@ type ClassName = string
 
 -- Private --
 
--- Fire event when a given attribute changes
-local function _onChange() end
-
 -- Public --
 
 ---- Cerebral Class ----
@@ -210,19 +207,6 @@ function Cerebral:Create(type: AvailableDefaultModules): any
 	end
 
 	return _r
-end
-
--- Does not make much sense here unless we are polling all data within Cerebral
-function Cerebral:GetData<A>(): any
-	local data: {}
-
-	data = {}
-
-	for _, class in self.Attributes do
-		data[class.Name] = class:GetSafe()
-	end
-
-	return data
 end
 
 return Cerebral
