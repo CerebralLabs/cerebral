@@ -1,13 +1,13 @@
 [package]
 name = "cerebrallabs/cerebral"
-version = "0.0.1"
+version = "0.0.2"
 description = "A player state management tool"
 license = "MIT"
 authors = ["Ruby Engelhart <engelhartrueben@gmail.com>"]
 registry = "https://github.com/UpliftGames/wally-index"
 repository = "https://github.com/CerebralLabs/cerebral"
 realm = "shared"
-exlude = ["aftman.toml","README.md","selene.toml",".luaurc"]
+exlude = ["aftman.toml","README.md","selene.toml",".luaurc", "docs", "docs/*"]
 include = ["src","scr/*"]
 private = false
 
