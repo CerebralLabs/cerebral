@@ -37,7 +37,7 @@ Private.
 
 Creates the Cerebral object.
 ]]
-function Cerebral.__New()
+function Cerebral.New(): Types.Cerebral
 	local self
 
 	self = {}
@@ -68,9 +68,11 @@ function Cerebral:DefineAgentAttributes(attributes: { [ClassName]: Attribute<any
 end
 
 --[[
+Private.
+
 Example of incoming playerData:
 ```
-{
+data = {
 	"money": 42,
 	"xp": 9999,
 	"is_admin": false
@@ -84,10 +86,10 @@ function Cerebral:__SetAttribute<A, B>(
 	name: string
 ): Subscribed<A, B>
 	-- Add subscription methods
-	local inter = Cerebral:__Subscribe(attribute)
+	local inter = self:__Subscribe(attribute)
 
 	-- Add the updated attribute to the Agent
-	local att = Agent:AddAttribute(inter, data, name)
+	local att = agent:AddAttribute(inter, data, name)
 
 	-- Return updated attribute for further use
 	return att
