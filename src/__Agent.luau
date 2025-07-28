@@ -8,6 +8,8 @@ local DataStore = require(script.Parent.__DataStore)
 
 -- Types --
 export type Agent = Types.Agent & {
+	player: Player,
+	ds_data: {[string]: Types.JSONAcceptable},
 	AddAttribute: (self: Agent, class: any, initialValue: any, name: string) -> Types.Attribute<any, any>,
 	GetAttribute: (self: Agent, className: string) -> Types.Attribute<any, any>,
 	UpdateTable: (self: Agent, attribute: string, callback: (any) -> any) -> any,
@@ -48,8 +50,12 @@ local function newPlayer(player: Player)
 		error(`[{script.Name}]: Must have player`)
 	end
 
-	local newData
 
+	return {
+		ds_data = {
+			data = {}
+		}
+	}
 end
 
 local function getAgentData(player: Player)
@@ -74,10 +80,14 @@ function Agent.New(player: Player): Agent
 	end
 
 	local self
+	local data
+
+	data = getAgentData(player) or newPlayer(player)
 
 	self = {
 		player = player,
 		attributes = {},
+		ds_data = data
 	}
 	setmetatable(self, Agent)
 
@@ -119,6 +129,46 @@ function Agent:GetAttribute<A>(attribute: string)
 	end
 
 	return class
+end
+
+--[[
+DEVELOPER NOTE: What do I want this to look like in the DataStore?
+{
+	player_id: number,
+	server_id: number,
+	data_id: number,
+	data: {
+		...
+	},
+	meta_data: {
+		session_count: number,
+	}
+}
+
+And then serverside...
+Seems silly tbh, could we not just convert everything to attributes?
+{
+	player: Player,
+	attributes: ...,
+	ds_data: {
+		data: { [string]: JSON }
+	}
+}
+]]
+function Agent:SaveToDataStore()
+	local safe_data
+
+	-- Get safe data from current attributes
+	safe_data = self:GetSafeData()
+
+	for name, data in safe_data do
+		if self.ds_data.data[name] then
+			self.ds_data.data[name] = data
+		end
+	end
+
+	-- returns data with updated data_id upon success
+	self.ds_data.data = DataStore:UpdatePlayerData(self.player, safe_data)
 end
 
 --[[
