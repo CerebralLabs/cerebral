@@ -202,7 +202,8 @@ end
 -- Removes an agent from Cerebral
 -- TODO: RemoveAgent must also go through the process of saving the users data
 function Cerebral:RemoveAgent(player: Player)
-	warn(`[{script.Name}]: RemoveAgent UNIMPLEMENTED. User data WILL be lost.`)
+	warn(`[{script.Name}]: RemoveAgent UNTESTED. User data may be lost.`)
+	self.Agents[player.UserId]:SaveToDataStore();
 	self.Agents[player.UserId] = nil
 end
 
