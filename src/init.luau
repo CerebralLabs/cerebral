@@ -235,6 +235,16 @@ function Cerebral:Create(type: AvailableDefaultModules): any
 
 	return _r
 end
+
+--[[
+Saves every agents data to data store.
+]]
+function Cerebral:__SaveAll()
+	for agent in self.Agents do
+		agent:SaveToDataStore()
+	end
+end
+
 --[[
 Allows only one Cerebral to be passed around the application.
 Importing Cerebral anywhere in the game, will always point towards
