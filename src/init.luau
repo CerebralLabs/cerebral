@@ -3,6 +3,7 @@
 
 -- Constants --
 local AGENT_FOLDER = "__Data"
+local AUTO_SAVE_PERIOD = 60
 
 -- Dependencies --
 local DefaultModules = require(script.DefaultModules)
@@ -40,6 +41,12 @@ function Cerebral.__New(): Types.Cerebral
 		Agents = {},
 		__attributes = {},
 		__sessionAttributes = {},
+		AutoSave = task.spawn(function()
+			while true do
+				task.wait(AUTO_SAVE_PERIOD)
+				self:__SaveAll()
+			end
+		end)
 	}
 
 	setmetatable(self, Cerebral)

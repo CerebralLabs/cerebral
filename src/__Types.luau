@@ -32,6 +32,7 @@ export type Cerebral = {
 	__New: () -> Cerebral,
 	AddAgent: (self: Cerebral, agent: Agent) -> (),
 	RemoveAgent: (self: Cerebral, agent: Player) -> (),
+	AutoSave: (typeof(coroutine)) -> ()
 }
 
 export type DataStore<A> = {
