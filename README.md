@@ -97,6 +97,8 @@ Cerebral:Migrate({version = 1}, function(oldData)
 end)
 ```
 
+NOTE: Cerebral should store migrations in the data store. Unsure how to go about this, but we want to raise all the flags if a migration is missing. 
+
 #### 2. Create more secure default modules.
 
 Take a module that tracks `experience`. `experience` should never be able to decrease. The developer should know this, but adding additoinal protections, like:
