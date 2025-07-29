@@ -44,15 +44,17 @@ function Cerebral.__New(): Types.Cerebral
 		Agents = {},
 		__attributes = {},
 		__sessionAttributes = {},
-		AutoSave = task.spawn(function()
-			while true do
-				task.wait(AUTO_SAVE_PERIOD)
-				self:__SaveAll()
-			end
-		end)
 	}
 
 	setmetatable(self, Cerebral)
+
+	-- Auto save feature.
+	self.AutoSave = task.spawn(function()
+		while true do
+			task.wait(AUTO_SAVE_PERIOD)
+			self:__SaveAll()
+		end
+	end)
 
 	return self
 end
