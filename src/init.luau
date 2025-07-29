@@ -5,6 +5,9 @@
 local AGENT_FOLDER = "__Data"
 local AUTO_SAVE_PERIOD = 60
 
+--- Constant Type ----
+type Constants = "AGENT_FOLDER" | "AUTO_SAVE_PERIOD"
+
 -- Dependencies --
 local DefaultModules = require(script.DefaultModules)
 local Signal = require(script.__Packages.Signal)
@@ -52,6 +55,33 @@ function Cerebral.__New(): Types.Cerebral
 	setmetatable(self, Cerebral)
 
 	return self
+end
+
+
+--[[
+Sets global values used throughout Cerebral.
+]]
+function Cerebral:SetGlobal(constantString: Constants, constantValue: JSONAcceptable)
+	if constantString == nil then
+		warn(`[{script.Name}]: Must have constantString`)
+		return
+	end
+
+	if type(constantString) ~= "string" then
+		warn(`[{script.Name}]: constantString must be of type string`)
+		return
+	end
+
+	if constantValue == nil then
+		warn(`[{script.Name}]: Must have constantValue`)
+		return
+	end
+
+	if constantString == "AUTO_SAVE_PERIOD" then
+		AUTO_SAVE_PERIOD = constantValue
+	elseif constantString ==  "AGENT_FOLDER" then
+		AGENT_FOLDER = constantValue
+	end
 end
 
 --[[
