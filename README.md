@@ -6,7 +6,8 @@
 
 [About](#about) |
 [Supported Platforms](#supported-platforms) |
-[Use](#use)
+[Use](#use) | 
+[Road Map](#road-map)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -74,3 +75,25 @@ proximitySensor.Triggered:Connect(function(player: Player)
     end
 end)
 ```
+
+### Road Map
+In no particular order:
+
+#### 1. Add migrations for `ds_data.data` to better allow for the transfer of data models. I want these to act similarly to how postgres migrates its databases. 
+
+For instance, if we wish to change the name of a attribute name, like `money` to `coins`, we would have the migration move the attribute to the new name upon the player joining the server. 
+
+Additionally, these migrations will (and must) be labeled cardinally. So a player that has not logged on in a while, their data can migrate thorugh several migrations without breaking anything.        panic!("NO GAME FOUND");
+
+#### 2. Create more secure default modules.
+
+Take a module that tracks `experience`. `experience` should never be able to decrease. The developer should know this, but adding additoinal protections, like:
+
+```luau
+Cerebral:DefineAttributes({ 
+    --                            Module Type | Options
+    "experience" = Cerebral:Create("number", { protected = true }) 
+})
+```
+
+would be welcomed. Additionally, adding in the `options` functionality via a table supports forward thinking. 
