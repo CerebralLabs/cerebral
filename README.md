@@ -83,7 +83,19 @@ In no particular order:
 
 For instance, if we wish to change the name of a attribute name, like `money` to `coins`, we would have the migration move the attribute to the new name upon the player joining the server. 
 
-Additionally, these migrations will (and must) be labeled cardinally. So a player that has not logged on in a while, their data can migrate thorugh several migrations without breaking anything.        panic!("NO GAME FOUND");
+Additionally, these migrations will (and must) be labeled cardinally. So when a player that has not logged on in a while, their data can migrate thorugh several migrations without breaking anything.
+
+Example:
+```luau
+-- migration 1
+Cerebral:Migrate({version = 1}, function(oldData)
+    local newData = oldData
+    newData.ds_data.data.coins = oldData.ds_data.data.money
+    newData.ds_data.data.money = nil
+
+    return newData
+end)
+```
 
 #### 2. Create more secure default modules.
 
