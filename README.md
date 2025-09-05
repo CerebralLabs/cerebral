@@ -20,7 +20,7 @@
 **Cerebral** is a Roblox Player State Management Tool. This tool is created to make managing Player Data through the server as seemeless and error free as possible, so you can spend more time on the fun stuff rather than wondering why your *Money* is not increasing.
 
 ## Supported Platforms
-**Cerebral** is currently posted on [Wally](www.wally.run) under `cerebrallabs/cerebral`. Roblox Store support is planned.
+**Cerebral** is currently posted on [Wally](https://www.wally.run) under `cerebrallabs/cerebral`. Roblox Store support is planned.
 
 ## Use
 ### Set Up
