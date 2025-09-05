@@ -271,6 +271,8 @@ function Cerebral:Create(type: AvailableDefaultModules): any
 		_r = DefaultModules.Number
 	elseif type == "string" then
 		_r = DefaultModules.String
+	elseif type == "table" then
+		_r = DefaultModules.Table
 	end
 
 	return _r
